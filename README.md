@@ -1,15 +1,23 @@
 # create-magicwand
 
-To install dependencies:
+This repository is a Bun workspace with a publishable CLI package in `packages/cli`
+
+## Install
 
 ```bash
 bun install
 ```
 
-To run:
+## Run the CLI in dev
 
 ```bash
-bun run index.ts
+bun run dev:cli
 ```
 
-This project was created using `bun init` in bun v1.3.10. [Bun](https://bun.com) is a fast all-in-one JavaScript runtime.
+## Build the CLI
+
+```bash
+bun run build:cli
+```
+
+The published CLI remains Node-compatible and is bundled from `packages/cli/src/index.ts` to `packages/cli/dist/cli.js`.

@@ -1,0 +1,23 @@
+{
+  "name": "create-magicwand",
+  "version": "0.0.1",
+  "type": "module",
+  "description": "🪄 Magicwand — pragmatic DDD backend scaffolding",
+  "bin": {
+    "create-magicwand": "./dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "templates"
+  ],
+  "scripts": {
+    "build": "bun build src/index.ts --target node --outfile dist/cli.js --banner '#!/usr/bin/env node'",
+    "dev": "bun run src/index.ts"
+  },
+  "dependencies": {
+    "@clack/prompts": "^1.2.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

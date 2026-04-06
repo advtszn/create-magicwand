@@ -27,12 +27,12 @@ async function main() {
     process.exit(0);
   }
 
-  const config = {
+  const _config = {
     projectName,
     runtime,
   };
 
-  // console.log(config);
+  // console.log(_config);
   outro("Config captured.");
 }
 
