@@ -1,0 +1,29 @@
+{
+  "name": "bun-hono",
+  "module": "src/index.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "bun --hot src/index.ts",
+    "build": "bun build src/index.ts --outdir dist --target bun",
+    "start": "bun dist/index.js",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@t3-oss/env-core": "^0.13.11",
+    "hono": "^4.12.12",
+    "hono-pino": "^0.10.3",
+    "pino": "^10.3.1",
+    "pino-pretty": "^13.1.2",
+    "reflect-metadata": "^0.2.2",
+    "typedi": "^0.10.0",
+    "ulid": "^3.0.2",
+    "zod": "^4.3.6"
+  }
+}
