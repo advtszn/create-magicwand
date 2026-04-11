@@ -1,0 +1,51 @@
+name: Release CLI
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    name: Publish create-magicwand
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/cli
+    env:
+      NPM_CONFIG_TOKEN: ${{ secrets.NPM_TOKEN }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.10
+
+      - name: Install dependencies
+        working-directory: .
+        run: bun install --frozen-lockfile
+
+      - name: Check formatting and lint rules
+        working-directory: .
+        run: bunx @biomejs/biome check .
+
+      - name: Build CLI
+        run: bun run build
+
+      - name: Verify tag matches package version
+        run: |
+          tag_version="${GITHUB_REF_NAME#v}"
+          package_version="$(node -p "require('./package.json').version")"
+
+          if [ "$tag_version" != "$package_version" ]; then
+            echo "Tag version $tag_version does not match packages/cli/package.json version $package_version"
+            exit 1
+          fi
+
+      - name: Publish package
+        run: bun publish
