@@ -21,18 +21,9 @@ export const metadata: Metadata = {
   title: "Magicwand CLI | Scaffold Layered DDD Backends",
   description:
     "Generate pragmatic layered DDD backends with Bun, Hono, toolchain presets, and a clean starting architecture.",
-  icons: [
-    {
-      media: "(prefers-color-scheme: light)",
-      url: "/favicon-black.svg",
-      href: "/favicon-black.svg",
-    },
-    {
-      media: "(prefers-color-scheme: dark)",
-      url: "/favicon-white.svg",
-      href: "/favicon-white.svg",
-    },
-  ],
+  icons: {
+    icon: "/favicon-black.svg",
+  },
   openGraph: {
     title: "Magicwand CLI | Scaffold Layered DDD Backends",
     description:
