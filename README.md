@@ -11,15 +11,35 @@ bun install
 ## Run the CLI in dev
 
 ```bash
-bun run dev:cli -- my-api
-bun run dev:cli -- ./apps/my-api --template bun-hono --toolchain eslint-prettier --alias "@/*"
+bun --cwd packages/cli run src/index.ts my-api
+bun --cwd packages/cli run src/index.ts ./apps/my-api --template bun-hono --toolchain eslint-prettier --alias "@/*"
 ```
 
 ## Build the CLI
 
 ```bash
-bun run build:cli
+bun --cwd packages/cli run build
 ```
+
+## Release the CLI
+
+The package publishes from GitHub Actions when you push a version tag.
+
+1. Update `packages/cli/package.json` to the release version.
+2. Commit that version bump on `main`.
+3. Create an annotated tag that matches the package version.
+4. Push `main` and the tag.
+
+```bash
+git commit -m "release 0.0.2"
+git tag -a v0.0.2 -m "Release v0.0.2"
+git push origin main
+git push origin v0.0.2
+```
+
+The release workflow installs dependencies, runs `bunx @biomejs/biome check .`, builds the CLI from `packages/cli`, verifies the tag matches `packages/cli/package.json`, and then runs `bun publish` from `packages/cli`.
+
+Set `NPM_TOKEN` in the GitHub repository secrets before using the workflow.
 
 ## v1 behavior
 

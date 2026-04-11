@@ -6,11 +6,8 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "bun run --filter create-magicwand build",
-    "build:cli": "bun run --filter create-magicwand build",
     "check": "bunx @biomejs/biome check .",
-    "check:write": "bunx @biomejs/biome check --write .",
-    "dev:cli": "bun run --filter create-magicwand dev"
+    "check:write": "bunx @biomejs/biome check --write ."
   },
   "devDependencies": {
     "@biomejs/biome": "2.4.10",
