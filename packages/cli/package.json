@@ -3,20 +3,45 @@
   "version": "0.0.1",
   "type": "module",
   "description": "🪄 Magicwand — pragmatic DDD backend scaffolding",
+  "author": "advtszn",
+  "license": "MIT",
+  "keywords": [
+    "cli",
+    "scaffold",
+    "scaffolding",
+    "template",
+    "ddd",
+    "backend",
+    "bun",
+    "hono"
+  ],
+  "homepage": "https://github.com/advtszn/create-magicwand#readme",
+  "bugs": {
+    "url": "https://github.com/advtszn/create-magicwand/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/advtszn/create-magicwand.git"
+  },
   "bin": {
     "create-magicwand": "./dist/cli.js"
   },
   "files": [
     "dist",
-    "templates"
+    "templates",
+    "LICENSE"
   ],
   "scripts": {
-    "build": "bun build src/index.ts --target node --outfile dist/cli.js --banner '#!/usr/bin/env node'"
+    "build": "bun build src/index.ts --target node --outfile dist/cli.js --banner '#!/usr/bin/env node'",
+    "prepack": "bun run build"
   },
   "dependencies": {
     "@clack/prompts": "^1.2.0"
   },
   "engines": {
     "node": ">=18"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
