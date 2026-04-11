@@ -6,7 +6,7 @@
     "useIgnoreFile": true
   },
   "files": {
-    "includes": ["**", "!!**/dist", "!!packages/cli/templates"]
+    "includes": ["**", "!!**/dist"]
   },
   "formatter": {
     "enabled": true,
@@ -15,7 +15,8 @@
   "linter": {
     "enabled": true,
     "rules": {
-      "recommended": true
+      "recommended": true,
+      "style": { "useImportType": "off" }
     }
   },
   "javascript": {

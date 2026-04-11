@@ -1,12 +1,10 @@
 {
   "name": "bun-hono",
-  "module": "src/index.ts",
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "bun --hot src/index.ts",
-    "build": "bun build src/index.ts --outdir dist --target bun",
-    "start": "bun dist/index.js",
+    "dev:http": "bun --hot src/interfaces/http/index.ts",
+    "build": "tsc",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {

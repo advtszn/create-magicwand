@@ -1,11 +1,13 @@
 import type { Context, Hono, MiddlewareHandler } from "hono";
+import pino from "pino";
 
 export interface IHttpVariables {
-	requestId: string;
+  requestId: string;
+  logger: pino.Logger;
 }
 
 export interface IHttpBindings {
-	Variables: IHttpVariables;
+  Variables: IHttpVariables;
 }
 
 export type IHttpApp = Hono<IHttpBindings>;
