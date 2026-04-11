@@ -6,7 +6,7 @@
     "useIgnoreFile": true
   },
   "files": {
-    "includes": ["**", "!!**/dist"]
+    "includes": ["**", "!!**/dist", "!!apps/www/src/app/globals.css"]
   },
   "formatter": {
     "enabled": true,
