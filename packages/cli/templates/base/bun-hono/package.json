@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev:http": "bun --hot src/interfaces/http/index.ts",
-    "build": "tsc",
+    "build:http": "tsc -p tsconfig.build.json",
+    "start:http": "bun --bun dist/interfaces/http/index.js",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {

@@ -2,7 +2,7 @@ import { intro, log, note, outro } from "@clack/prompts";
 import { getHelpText, parseArgs } from "./args";
 import { getAvailableTemplateIds, resolveConfig } from "./config";
 import { ENABLED_TEMPLATES } from "./constants";
-import { generateProject } from "./generate";
+import { finalizeProject, generateProject } from "./generate";
 
 async function main() {
   const args = parseArgs(process.argv.slice(2));
@@ -28,22 +28,30 @@ async function main() {
       `template: ${config.template}`,
       `toolchain: ${config.toolchain}`,
       `alias: ${config.alias}`,
+      `install dependencies: ${config.installDependencies ? "yes" : "no"}`,
+      `initialize git: ${config.initGit ? "yes" : "no"}`,
     ].join("\n"),
     "Config",
   );
 
   await generateProject(config);
+  await finalizeProject(config);
 
   log.success(`Generated ${config.packageName} at ${config.targetPath}`);
 
-  outro(
-    [
-      "Next steps:",
-      `  cd ${config.targetPath}`,
-      "  bun install",
-      "  bun run dev",
-    ].join("\n"),
-  );
+  outro(buildNextSteps(config));
+}
+
+function buildNextSteps(config: Awaited<ReturnType<typeof resolveConfig>>) {
+  const steps = ["Next steps:", `  cd ${config.targetPath}`];
+
+  if (!config.installDependencies) {
+    steps.push("  bun install");
+  }
+
+  steps.push("  bun run dev:http");
+
+  return steps.join("\n");
 }
 
 main().catch((error) => {

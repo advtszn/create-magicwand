@@ -11,8 +11,7 @@
     "templates"
   ],
   "scripts": {
-    "build": "bun build src/index.ts --target node --outfile dist/cli.js --banner '#!/usr/bin/env node'",
-    "dev": "bun run src/index.ts"
+    "build": "bun build src/index.ts --target node --outfile dist/cli.js --banner '#!/usr/bin/env node'"
   },
   "dependencies": {
     "@clack/prompts": "^1.2.0"

@@ -4,7 +4,7 @@ import { z } from "zod";
 import { Logger } from "../logger/logger.infrastructure";
 
 const runtimeEnvSchema = z.object({
-  APP_NAME: z.string().min(1).default("hono-starter"),
+  APP_NAME: z.string().min(1).default("bun-hono"),
   PORT: z.coerce.number().int().positive().default(3000),
   LOG_LEVEL: z
     .enum(["fatal", "error", "warn", "info", "debug", "trace"])

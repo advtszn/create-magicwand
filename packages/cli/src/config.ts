@@ -1,6 +1,6 @@
 import { access, readdir } from "node:fs/promises";
 import { basename, resolve } from "node:path";
-import { cancel, isCancel, select, text } from "@clack/prompts";
+import { cancel, confirm, isCancel, select, text } from "@clack/prompts";
 import type { CliArgs } from "./args";
 import {
   BASE_TEMPLATES_DIR,
@@ -51,6 +51,12 @@ export async function resolveConfig(args: CliArgs): Promise<ResolvedConfig> {
       ? await promptAlias()
       : DEFAULT_ALIAS;
 
+  const installDependencies = isInteractive
+    ? await promptInstallDependencies()
+    : false;
+
+  const initGit = isInteractive ? await promptInitGit() : false;
+
   validateTemplate(template, availableTemplateIds);
   validateToolchain(toolchainValue);
   validateAlias(alias);
@@ -70,6 +76,8 @@ export async function resolveConfig(args: CliArgs): Promise<ResolvedConfig> {
   return {
     alias,
     aliasImportPrefix: alias.slice(0, -1),
+    initGit,
+    installDependencies,
     library,
     packageName,
     projectName: packageName,
@@ -160,13 +168,13 @@ async function promptTargetPath() {
     placeholder: "my-api",
     defaultValue: "my-api",
     validate(input) {
-      if (!(input ?? "").trim()) {
+      if (!resolveTextInput(input, "my-api")) {
         return "Target path is required.";
       }
     },
   });
 
-  return unwrapPrompt<string>(value);
+  return resolveTextInput(unwrapPrompt<string>(value), "my-api");
 }
 
 async function promptTemplateFromWizard() {
@@ -228,7 +236,7 @@ async function promptAlias() {
     defaultValue: DEFAULT_ALIAS,
     validate(input) {
       try {
-        validateAlias(input ?? "");
+        validateAlias(resolveTextInput(input, DEFAULT_ALIAS));
         return undefined;
       } catch (error) {
         return error instanceof Error ? error.message : "Invalid alias.";
@@ -236,7 +244,25 @@ async function promptAlias() {
     },
   });
 
-  return unwrapPrompt<string>(value);
+  return resolveTextInput(unwrapPrompt<string>(value), DEFAULT_ALIAS);
+}
+
+async function promptInstallDependencies() {
+  const value = await confirm({
+    message: "Install dependencies?",
+    initialValue: true,
+  });
+
+  return unwrapPrompt<boolean>(value);
+}
+
+async function promptInitGit() {
+  const value = await confirm({
+    message: "Initialize a git repository?",
+    initialValue: true,
+  });
+
+  return unwrapPrompt<boolean>(value);
 }
 
 function unwrapPrompt<T>(value: T | symbol): T {
@@ -246,6 +272,14 @@ function unwrapPrompt<T>(value: T | symbol): T {
   }
 
   return value as T;
+}
+
+function resolveTextInput(
+  input: string | undefined,
+  defaultValue: string,
+): string {
+  const trimmed = (input ?? "").trim();
+  return trimmed || defaultValue;
 }
 
 function fail(message: string): never {

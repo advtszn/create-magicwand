@@ -1,9 +1,26 @@
+import { spawn } from "node:child_process";
 import { cp, mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { spinner } from "@clack/prompts";
 import { ensureTemplateDirectoryExists } from "./config";
 import { TOOLCHAIN_TEMPLATES_DIR } from "./constants";
 import type { ResolvedConfig } from "./types";
+
+const EXCLUDED_TEMPLATE_ENTRIES = new Set([
+  ".cache",
+  ".DS_Store",
+  ".git",
+  ".idea",
+  ".turbo",
+  ".vscode",
+  "bun.lock",
+  "bun.lockb",
+  "dist",
+  "node_modules",
+  "package-lock.json",
+  "pnpm-lock.yaml",
+  "yarn.lock",
+]);
 
 const PROJECT_REPLACEMENTS = [
   ["{{projectName}}", (config: ResolvedConfig) => config.projectName],
@@ -30,7 +47,13 @@ export async function generateProject(config: ResolvedConfig) {
 
     spin.message("Copying template files");
     await mkdir(config.targetPathAbsolute, { recursive: true });
-    await cp(templateDirectory, config.targetPathAbsolute, { recursive: true });
+    await cp(templateDirectory, config.targetPathAbsolute, {
+      recursive: true,
+      filter(source) {
+        const entryName = source.split(/[/\\]/).pop();
+        return !entryName || !EXCLUDED_TEMPLATE_ENTRIES.has(entryName);
+      },
+    });
 
     if (config.toolchain !== "none") {
       spin.message(`Applying ${config.toolchain} toolchain`);
@@ -44,6 +67,27 @@ export async function generateProject(config: ResolvedConfig) {
     spin.stop(`Created ${config.packageName}`);
   } catch (error) {
     spin.error("Scaffolding failed");
+    throw error;
+  }
+}
+
+export async function finalizeProject(config: ResolvedConfig) {
+  const spin = spinner();
+
+  try {
+    if (config.installDependencies) {
+      spin.start("Installing dependencies");
+      await runCommand("bun", ["install"], config.targetPathAbsolute);
+      spin.stop("Installed dependencies");
+    }
+
+    if (config.initGit) {
+      spin.start("Initializing git repository");
+      await runCommand("git", ["init"], config.targetPathAbsolute);
+      spin.stop("Initialized git repository");
+    }
+  } catch (error) {
+    spin.error("Project setup failed");
     throw error;
   }
 }
@@ -70,6 +114,10 @@ async function applyToolchainFiles(config: ResolvedConfig) {
   const sourceDirectory = resolve(TOOLCHAIN_TEMPLATES_DIR, config.toolchain);
   await cp(sourceDirectory, config.targetPathAbsolute, {
     recursive: true,
+    filter(source) {
+      const entryName = source.split(/[/\\]/).pop();
+      return !entryName || !EXCLUDED_TEMPLATE_ENTRIES.has(entryName);
+    },
   });
 }
 
@@ -195,4 +243,31 @@ function isNotFoundError(error: unknown) {
     "code" in error &&
     error.code === "ENOENT"
   );
+}
+
+function runCommand(
+  command: string,
+  args: string[],
+  cwd: string,
+): Promise<void> {
+  return new Promise((resolvePromise, rejectPromise) => {
+    const child = spawn(command, args, {
+      cwd,
+      stdio: "inherit",
+    });
+
+    child.on("error", rejectPromise);
+    child.on("exit", (code) => {
+      if (code === 0) {
+        resolvePromise();
+        return;
+      }
+
+      rejectPromise(
+        new Error(
+          `${command} ${args.join(" ")} exited with code ${code ?? "unknown"}.`,
+        ),
+      );
+    });
+  });
 }

@@ -14,6 +14,8 @@ create-magicwand <target-path> [options]
 - `--toolchain none|biome|eslint-prettier`
 - `--alias <pattern>`
 
+In interactive mode, the wizard also asks whether to install dependencies and initialize a git repository.
+
 ### Examples
 
 ```bash
@@ -25,7 +27,7 @@ create-magicwand . --template bun-hono
 ## Development
 
 ```bash
-bun run dev 
+bun run dev
 ```
 
 ## Build
@@ -33,4 +35,3 @@ bun run dev
 ```bash
 bun run build
 ```
-

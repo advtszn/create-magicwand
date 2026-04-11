@@ -25,7 +25,7 @@ bun install
 Start the dev server:
 
 ```bash
-bun run dev
+bun run dev:http
 ```
 
 Typecheck the project:
@@ -37,16 +37,16 @@ bun run typecheck
 Build the project:
 
 ```bash
-bun run build
+bun run build:http
 ```
 
 The default health check is available at `GET /v1/system/health`.
 
 ## How do I deploy this?
 
-This scaffold builds to `dist/index.js`, so you can deploy it anywhere Bun apps can run. A common production flow is:
+This scaffold transpiles to `dist/interfaces/http/index.js`, so you can deploy it anywhere Bun apps can run. A common production flow is:
 
 ```bash
-bun run build
-bun run start
+bun run build:http
+bun run start:http
 ```

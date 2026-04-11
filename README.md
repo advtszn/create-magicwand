@@ -25,6 +25,7 @@ bun run build:cli
 
 - one enabled template: `bun-hono`
 - interactive wizard asks for runtime + library, then resolves to the template id
+- interactive wizard also asks whether to install dependencies and initialize git
 - non-interactive usage takes `--template <directory-name>`
 - supported toolchains:
   - `none`
