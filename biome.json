@@ -6,7 +6,7 @@
     "useIgnoreFile": true
   },
   "files": {
-    "includes": ["**", "!!**/dist", "!!apps/www/src/app/globals.css"]
+    "includes": ["**", "!!**/dist"]
   },
   "formatter": {
     "enabled": true,
@@ -23,6 +23,9 @@
     "formatter": {
       "quoteStyle": "double"
     }
+  },
+  "css": {
+    "parser": { "tailwindDirectives": true }
   },
   "assist": {
     "enabled": true,
