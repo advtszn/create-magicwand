@@ -1,6 +1,6 @@
 # create-magicwand
 
-CLI package for generating Magicwand projects.
+CLI package for scaffolding layered DDD backends with your preferred runtime and framework.
 
 ## Usage
 
@@ -10,18 +10,21 @@ create-magicwand <target-path> [options]
 
 ### Flags
 
+- `--runtime <name>`
+- `--framework <name>`
 - `--template <name>`
 - `--toolchain none|biome|eslint-prettier`
 - `--alias <pattern>`
 
-In interactive mode, the wizard also asks whether to install dependencies and initialize a git repository.
+`--template` remains available as a direct override, but the primary interface is choosing a runtime and framework. In interactive mode, the wizard also asks whether to install dependencies and initialize a git repository.
 
 ### Examples
 
 ```bash
-create-magicwand my-api --template bun-hono
-create-magicwand ./apps/my-api --template bun-hono --toolchain eslint-prettier --alias "@/*"
-create-magicwand . --template bun-hono
+create-magicwand my-api
+create-magicwand my-api --runtime node --framework hono
+create-magicwand ./apps/my-api --runtime bun --framework hono --toolchain eslint-prettier --alias "@/*"
+create-magicwand . --template node-hono
 ```
 
 ## Development

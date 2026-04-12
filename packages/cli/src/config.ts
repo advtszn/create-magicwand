@@ -5,12 +5,15 @@ import type { CliArgs } from "./args";
 import {
   BASE_TEMPLATES_DIR,
   DEFAULT_ALIAS,
-  DEFAULT_TEMPLATE,
+  DEFAULT_FRAMEWORK,
+  DEFAULT_RUNTIME,
   DEFAULT_TOOLCHAIN,
   ENABLED_TEMPLATES,
+  FRAMEWORKS,
+  RUNTIMES,
   TOOLCHAINS,
 } from "./constants";
-import type { ResolvedConfig, Toolchain } from "./types";
+import type { Framework, ResolvedConfig, Runtime, Toolchain } from "./types";
 
 export async function getAvailableTemplateIds(): Promise<string[]> {
   const entries = await readdir(BASE_TEMPLATES_DIR, { withFileTypes: true });
@@ -33,11 +36,17 @@ export async function resolveConfig(args: CliArgs): Promise<ResolvedConfig> {
           "Missing <target-path>. Run with a path or use the interactive wizard.",
         );
 
-  const template = args.template
-    ? args.template
-    : isInteractive
-      ? await promptTemplateFromWizard()
-      : DEFAULT_TEMPLATE;
+  const [runtimeValue, frameworkValue] = args.template
+    ? resolveRuntimeAndFrameworkFromTemplate(args.template)
+    : args.runtime || args.framework
+      ? [args.runtime ?? DEFAULT_RUNTIME, args.framework ?? DEFAULT_FRAMEWORK]
+      : isInteractive
+        ? await promptTemplateFromWizard()
+        : [DEFAULT_RUNTIME, DEFAULT_FRAMEWORK];
+
+  const runtime = runtimeValue as string;
+  const framework = frameworkValue as string;
+  const template = args.template ?? `${runtime}-${framework}`;
 
   const toolchainValue = args.toolchain
     ? args.toolchain
@@ -57,7 +66,11 @@ export async function resolveConfig(args: CliArgs): Promise<ResolvedConfig> {
 
   const initGit = isInteractive ? await promptInitGit() : false;
 
+  validateRuntime(runtime);
+  validateFramework(framework);
   validateTemplate(template, availableTemplateIds);
+  validateExplicitSelectionMatchesTemplate(args, runtime, framework);
+  validateTemplateMatchesSelection(template, runtime, framework);
   validateToolchain(toolchainValue);
   validateAlias(alias);
 
@@ -71,14 +84,12 @@ export async function resolveConfig(args: CliArgs): Promise<ResolvedConfig> {
     );
   }
 
-  const [runtime, library] = parseTemplate(template);
-
   return {
     alias,
     aliasImportPrefix: alias.slice(0, -1),
+    framework,
     initGit,
     installDependencies,
-    library,
     packageName,
     projectName: packageName,
     runtime,
@@ -119,6 +130,54 @@ function validateToolchain(toolchain: string): asserts toolchain is Toolchain {
   }
 }
 
+function validateRuntime(runtime: string): asserts runtime is Runtime {
+  if (!RUNTIMES.includes(runtime as Runtime)) {
+    throw new Error(
+      `Invalid runtime "${runtime}". Expected one of: ${RUNTIMES.join(", ")}.`,
+    );
+  }
+}
+
+function validateFramework(framework: string): asserts framework is Framework {
+  if (!FRAMEWORKS.includes(framework as Framework)) {
+    throw new Error(
+      `Invalid framework "${framework}". Expected one of: ${FRAMEWORKS.join(", ")}.`,
+    );
+  }
+}
+
+function validateTemplateMatchesSelection(
+  template: string,
+  runtime: string,
+  framework: string,
+) {
+  const expectedTemplate = `${runtime}-${framework}`;
+
+  if (template !== expectedTemplate) {
+    throw new Error(
+      `Template "${template}" does not match runtime/framework selection "${expectedTemplate}".`,
+    );
+  }
+}
+
+function validateExplicitSelectionMatchesTemplate(
+  args: CliArgs,
+  runtime: string,
+  framework: string,
+) {
+  if (args.runtime && args.runtime !== runtime) {
+    throw new Error(
+      `Runtime "${args.runtime}" does not match template "${args.template}".`,
+    );
+  }
+
+  if (args.framework && args.framework !== framework) {
+    throw new Error(
+      `Framework "${args.framework}" does not match template "${args.template}".`,
+    );
+  }
+}
+
 function validateAlias(alias: string) {
   if (!alias.endsWith("/*")) {
     throw new Error(
@@ -141,7 +200,7 @@ function validateAlias(alias: string) {
   }
 }
 
-function parseTemplate(template: string): [string, string] {
+function parseTemplate(template: string): [Runtime, Framework] {
   const parts = template.split("-");
 
   if (parts.length !== 2 || !parts[0] || !parts[1]) {
@@ -150,7 +209,16 @@ function parseTemplate(template: string): [string, string] {
     );
   }
 
-  return [parts[0], parts[1]];
+  const [runtime, framework] = parts;
+
+  validateRuntime(runtime);
+  validateFramework(framework);
+
+  return [runtime, framework];
+}
+
+function resolveRuntimeAndFrameworkFromTemplate(template: string) {
+  return parseTemplate(template);
 }
 
 function normalizePackageName(value: string) {
@@ -177,33 +245,35 @@ async function promptTargetPath() {
   return resolveTextInput(unwrapPrompt<string>(value), "my-api");
 }
 
-async function promptTemplateFromWizard() {
+async function promptTemplateFromWizard(): Promise<[Runtime, Framework]> {
   const runtime = await select({
     message: "Runtime",
     options: [
-      { value: "bun", label: "Bun", hint: "available in v1" },
-      { value: "node", label: "Node", hint: "coming soon", disabled: true },
+      { value: "bun", label: "Bun" },
+      { value: "node", label: "Node" },
     ],
   });
 
-  const resolvedRuntime = unwrapPrompt<string>(runtime);
+  const resolvedRuntime = unwrapPrompt<Runtime>(runtime);
 
-  const library = await select({
-    message: "Library",
+  const framework = await select({
+    message: "Framework",
     options: [
-      { value: "hono", label: "Hono", hint: "available in v1" },
+      {
+        value: "hono",
+        label: "Hono",
+      },
       {
         value: "express",
         label: "Express",
-        hint: "coming soon",
         disabled: true,
       },
     ],
   });
 
-  const resolvedLibrary = unwrapPrompt<string>(library);
+  const resolvedFramework = unwrapPrompt<Framework>(framework);
 
-  return `${resolvedRuntime}-${resolvedLibrary}`;
+  return [resolvedRuntime, resolvedFramework];
 }
 
 async function promptToolchain(): Promise<Toolchain> {

@@ -1,6 +1,6 @@
 # create-magicwand
 
-CLI for scaffolding pragmatic layered DDD backends.
+CLI for scaffolding pragmatic layered DDD backends in your preferred runtime and framework.
 
 ## Install
 
@@ -12,7 +12,8 @@ bun install
 
 ```bash
 bun --cwd packages/cli run src/index.ts my-api
-bun --cwd packages/cli run src/index.ts ./apps/my-api --template bun-hono --toolchain eslint-prettier --alias "@/*"
+bun --cwd packages/cli run src/index.ts my-api --runtime node --framework hono
+bun --cwd packages/cli run src/index.ts ./apps/my-api --runtime bun --framework hono --toolchain eslint-prettier --alias "@/*"
 ```
 
 ## Build the CLI
@@ -43,10 +44,10 @@ Set `NPM_TOKEN` in the GitHub repository secrets before using the workflow.
 
 ## v1 behavior
 
-- one enabled template: `bun-hono`
-- interactive wizard asks for runtime + library, then resolves to the template id
+- enabled templates: `bun-hono`, `node-hono`
+- interactive wizard asks for runtime + framework, then resolves to the template id
 - interactive wizard also asks whether to install dependencies and initialize git
-- non-interactive usage takes `--template <directory-name>`
+- non-interactive usage accepts `--runtime <name>` + `--framework <name>` or `--template <directory-name>`
 - supported toolchains:
   - `none`
   - `biome`

@@ -73,11 +73,12 @@ export async function generateProject(config: ResolvedConfig) {
 
 export async function finalizeProject(config: ResolvedConfig) {
   const spin = spinner();
+  const packageManager = config.runtime === "node" ? "npm" : "bun";
 
   try {
     if (config.installDependencies) {
       spin.start("Installing dependencies");
-      await runCommand("bun", ["install"], config.targetPathAbsolute);
+      await runCommand(packageManager, ["install"], config.targetPathAbsolute);
       spin.stop("Installed dependencies");
     }
 
@@ -155,7 +156,7 @@ async function patchPackageJson(config: ResolvedConfig) {
   packageJson.name = config.packageName;
   packageJson.scripts = {
     ...packageJson.scripts,
-    ...getToolchainScripts(config.toolchain),
+    ...getToolchainScripts(config),
   };
   packageJson.devDependencies = {
     ...packageJson.devDependencies,
@@ -169,20 +170,21 @@ async function patchPackageJson(config: ResolvedConfig) {
   );
 }
 
-function getToolchainScripts(
-  toolchain: ResolvedConfig["toolchain"],
-): Record<string, string> {
-  switch (toolchain) {
+function getToolchainScripts(config: ResolvedConfig): Record<string, string> {
+  const packageRunner = config.runtime === "node" ? "npm run" : "bun run";
+  const packageExecutor = config.runtime === "node" ? "npx" : "bunx";
+
+  switch (config.toolchain) {
     case "none":
       return {};
     case "biome":
       return {
-        lint: "bunx @biomejs/biome lint .",
-        "lint:fix": "bunx @biomejs/biome lint --write .",
-        format: "bunx @biomejs/biome format --write .",
-        "format:check": "bunx @biomejs/biome format .",
-        check: "bunx @biomejs/biome check .",
-        "check:write": "bunx @biomejs/biome check --write .",
+        lint: `${packageExecutor} @biomejs/biome lint .`,
+        "lint:fix": `${packageExecutor} @biomejs/biome lint --write .`,
+        format: `${packageExecutor} @biomejs/biome format --write .`,
+        "format:check": `${packageExecutor} @biomejs/biome format .`,
+        check: `${packageExecutor} @biomejs/biome check .`,
+        "check:write": `${packageExecutor} @biomejs/biome check --write .`,
       };
     case "eslint-prettier":
       return {
@@ -190,8 +192,8 @@ function getToolchainScripts(
         "lint:fix": "eslint . --fix",
         format: "prettier . --write",
         "format:check": "prettier . --check",
-        check: "bun run lint && bun run format:check",
-        "check:write": "bun run lint:fix && bun run format",
+        check: `${packageRunner} lint && ${packageRunner} format:check`,
+        "check:write": `${packageRunner} lint:fix && ${packageRunner} format`,
       };
   }
 }
@@ -253,7 +255,18 @@ function runCommand(
   return new Promise((resolvePromise, rejectPromise) => {
     const child = spawn(command, args, {
       cwd,
-      stdio: "inherit",
+      stdio: ["ignore", "pipe", "pipe"],
+    });
+
+    let stdout = "";
+    let stderr = "";
+
+    child.stdout?.on("data", (chunk) => {
+      stdout += chunk.toString();
+    });
+
+    child.stderr?.on("data", (chunk) => {
+      stderr += chunk.toString();
     });
 
     child.on("error", rejectPromise);
@@ -265,7 +278,7 @@ function runCommand(
 
       rejectPromise(
         new Error(
-          `${command} ${args.join(" ")} exited with code ${code ?? "unknown"}.`,
+          `${command} ${args.join(" ")} exited with code ${code ?? "unknown"}.${[stdout.trim(), stderr.trim()].filter(Boolean).length ? `\n${[stdout.trim(), stderr.trim()].filter(Boolean).join("\n")}` : ""}`,
         ),
       );
     });

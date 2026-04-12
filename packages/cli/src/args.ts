@@ -1,5 +1,7 @@
 export interface CliArgs {
   targetPath?: string;
+  runtime?: string;
+  framework?: string;
   template?: string;
   toolchain?: string;
   alias?: string;
@@ -8,8 +10,13 @@ export interface CliArgs {
 
 const VALUE_FLAGS = new Map<
   string,
-  keyof Pick<CliArgs, "template" | "toolchain" | "alias">
+  keyof Pick<
+    CliArgs,
+    "runtime" | "framework" | "template" | "toolchain" | "alias"
+  >
 >([
+  ["runtime", "runtime"],
+  ["framework", "framework"],
   ["template", "template"],
   ["toolchain", "toolchain"],
   ["alias", "alias"],
@@ -87,21 +94,25 @@ export function getHelpText(options: {
     "  <target-path>              Destination path for the generated project",
     "",
     "Options",
-    "  --template <name>         Template directory name under templates/base",
+    "  --runtime <name>          bun | node",
+    "  --framework <name>        hono",
+    "  --template <name>         Direct template override, e.g. bun-hono",
     "  --toolchain <name>        none | biome | eslint-prettier",
     '  --alias <pattern>         Import alias pattern, e.g. "~/*" or "@/*"',
     "  -h, --help                Show this help message",
     "",
     "Examples",
-    "  create-magicwand my-api --template bun-hono",
-    '  create-magicwand ./apps/my-api --template bun-hono --toolchain eslint-prettier --alias "@/*"',
-    "  create-magicwand . --template bun-hono",
+    "  create-magicwand my-api",
+    "  create-magicwand my-api --runtime node --framework hono",
+    '  create-magicwand ./apps/my-api --runtime bun --framework hono --toolchain eslint-prettier --alias "@/*"',
+    "  create-magicwand . --template node-hono",
     "",
     `Available template directories: ${availableTemplates}`,
     `Enabled in v1: ${enabledTemplates}`,
     "",
     "Defaults",
-    "  template: bun-hono",
+    "  runtime: bun",
+    "  framework: hono",
     "  toolchain: biome",
     '  alias: "~/*"',
   ].join("\n");

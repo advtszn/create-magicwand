@@ -20,14 +20,14 @@ export const metadata: Metadata = {
   ),
   title: "Magicwand CLI | Scaffold Layered DDD Backends",
   description:
-    "Generate pragmatic layered DDD backends with Bun, Hono, toolchain presets, and a clean starting architecture.",
+    "Generate layered DDD backends with Bun or Node, Hono, toolchain presets, and a clean starting architecture.",
   icons: {
     icon: "/favicon-black.svg",
   },
   openGraph: {
     title: "Magicwand CLI | Scaffold Layered DDD Backends",
     description:
-      "Generate pragmatic layered DDD backends with Bun, Hono, toolchain presets, and a clean starting architecture.",
+      "Generate layered DDD backends with Bun or Node, Hono, toolchain presets, and a clean starting architecture.",
     siteName: "Magicwand CLI",
     images: [
       {
@@ -44,7 +44,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Magicwand CLI | Scaffold Layered DDD Backends",
     description:
-      "Generate pragmatic layered DDD backends with Bun, Hono, toolchain presets, and a clean starting architecture.",
+      "Generate layered DDD backends with Bun or Node, Hono, toolchain presets, and a clean starting architecture.",
     images: ["/og.png"],
   },
 };

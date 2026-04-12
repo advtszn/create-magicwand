@@ -1,10 +1,28 @@
 # {{projectName}}
 
-This is a Bun + Hono API project bootstrapped with `create-magicwand`.
+This is a layered DDD backend for Bun + Hono bootstrapped with `create-magicwand`.
 
-## What's next? How do I make an app with this?
+It gives you a pragmatic starting point with `domain`, `application`,
+`infrastructure`, and `interfaces` layers already separated so you can ship
+features without inventing the project structure first.
 
-We try to keep this project as simple as possible, so you can start with the scaffold we set up for you and add more structure only when you need it.
+## Architecture
+
+Use the scaffold as a baseline for backend features such as new use cases,
+repositories, integrations, and HTTP routes.
+
+Core layers:
+
+- `src/domain`: business entities and domain rules
+- `src/application`: use cases and application services
+- `src/infrastructure`: adapters such as config, persistence, and logging
+- `src/interfaces`: HTTP routes, controllers, and transport concerns
+- `src/shared`: cross-cutting helpers and shared primitives
+
+We keep the scaffold intentionally small, so you can extend it without having
+to undo framework boilerplate later.
+
+## Stack
 
 If you are not familiar with the technologies used in this project, refer to the docs below:
 
@@ -41,6 +59,9 @@ bun run build:http
 ```
 
 The default health check is available at `GET /v1/system/health`.
+
+From here, a typical next step is to add a new application use case, wire it to
+an infrastructure dependency, and expose it through an HTTP route.
 
 ## How do I deploy this?
 

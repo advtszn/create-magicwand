@@ -25,6 +25,8 @@ async function main() {
   note(
     [
       `target: ${config.targetPath}`,
+      `runtime: ${config.runtime}`,
+      `framework: ${config.framework}`,
       `template: ${config.template}`,
       `toolchain: ${config.toolchain}`,
       `alias: ${config.alias}`,
@@ -44,12 +46,13 @@ async function main() {
 
 function buildNextSteps(config: Awaited<ReturnType<typeof resolveConfig>>) {
   const steps = ["Next steps:", `  cd ${config.targetPath}`];
+  const packageManager = config.runtime === "node" ? "npm" : "bun";
 
   if (!config.installDependencies) {
-    steps.push("  bun install");
+    steps.push(`  ${packageManager} install`);
   }
 
-  steps.push("  bun run dev:http");
+  steps.push(`  ${packageManager} run dev:http`);
 
   return steps.join("\n");
 }
