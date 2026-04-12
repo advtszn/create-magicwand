@@ -120,7 +120,7 @@ function LaunchCard({ codeBlockRef }: { codeBlockRef?: Ref<HTMLDivElement> }) {
         </a>
       }
     >
-      <CodeBlock ref={codeBlockRef} code="cd my-api && bun run dev:http" />
+      <CodeBlock ref={codeBlockRef} code="bun run dev:http" />
     </StepCard>
   );
 }
@@ -284,10 +284,7 @@ export default function DocsPage() {
               title="Choose runtime and framework"
               centered
             >
-              <CodeBlock
-                ref={ref0}
-                code="bunx create-magicwand my-api --runtime node --framework hono"
-              />
+              <CodeBlock ref={ref0} code="bunx create-magicwand@latest" />
             </StepCard>
 
             <LaunchCard codeBlockRef={ref1} />
