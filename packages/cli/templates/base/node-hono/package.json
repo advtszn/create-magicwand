@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@hono/node-server": "^1.19.13",
+    "dotenv": "^16.6.1",
     "hono": "^4.12.12",
     "hono-pino": "^0.10.3",
     "pino": "^10.3.1",

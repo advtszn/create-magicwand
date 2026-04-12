@@ -266,7 +266,6 @@ async function promptTemplateFromWizard(): Promise<[Runtime, Framework]> {
       {
         value: "express",
         label: "Express",
-        disabled: true,
       },
     ],
   });

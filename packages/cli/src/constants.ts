@@ -10,7 +10,12 @@ export const DEFAULT_ALIAS = "~/*";
 
 export const RUNTIMES = ["bun", "node"] as const;
 export const FRAMEWORKS = ["hono", "express"] as const;
-export const ENABLED_TEMPLATES = ["bun-hono", "node-hono"] as const;
+export const ENABLED_TEMPLATES = [
+  "bun-hono",
+  "bun-express",
+  "node-hono",
+  "node-express",
+] as const;
 export const TOOLCHAINS = ["none", "biome", "eslint-prettier"] as const;
 
 export const BASE_TEMPLATES_DIR = fileURLToPath(

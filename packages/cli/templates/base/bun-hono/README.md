@@ -58,7 +58,7 @@ Build the project:
 bun run build:http
 ```
 
-The default health check is available at `GET /v1/system/health`.
+The default health check is available at `GET /v1/health`.
 
 From here, a typical next step is to add a new application use case, wire it to
 an infrastructure dependency, and expose it through an HTTP route.

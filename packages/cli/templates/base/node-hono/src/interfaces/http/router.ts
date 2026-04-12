@@ -11,7 +11,7 @@ export class Router {
   ) {}
 
   async init(path: string, app: IHttpApp): Promise<void> {
-    await this.systemRouter.init(`${path}/system`, app);
+    await this.systemRouter.init(path, app);
     await this.userRouter.init(`${path}/user`, app);
   }
 }
