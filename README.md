@@ -1,6 +1,21 @@
 # create-magicwand
 
-CLI for scaffolding pragmatic layered DDD backends in your preferred runtime and framework.
+Contributor docs for the `create-magicwand` monorepo.
+
+`create-magicwand` is a CLI for scaffolding layered DDD backends. This
+repository contains the published CLI, the shipped project templates, and the
+marketing site.
+
+## Repository layout
+
+- `packages/cli`: published `create-magicwand` CLI
+- `packages/cli/templates/base`: scaffold templates copied into generated apps
+- `apps/www`: Next.js marketing site for the project
+
+## Requirements
+
+- Bun `1.3.10`
+- Node `18+`
 
 ## Install
 
@@ -8,7 +23,29 @@ CLI for scaffolding pragmatic layered DDD backends in your preferred runtime and
 bun install
 ```
 
-## Run the CLI in dev
+## Common commands
+
+Run from the repository root unless noted otherwise.
+
+### Check formatting and lint
+
+```bash
+bun run check
+```
+
+### Auto-fix formatting and lint
+
+```bash
+bun run check:write
+```
+
+### Build the CLI
+
+```bash
+bun --cwd packages/cli run build
+```
+
+### Run the CLI in development
 
 ```bash
 bun --cwd packages/cli run src/index.ts my-api
@@ -16,43 +53,58 @@ bun --cwd packages/cli run src/index.ts my-api --runtime node --framework hono
 bun --cwd packages/cli run src/index.ts ./apps/my-api --runtime bun --framework hono --toolchain eslint-prettier --alias "@/*"
 ```
 
-## Build the CLI
+### Run the website locally
 
 ```bash
-bun --cwd packages/cli run build
+bun --cwd apps/www run dev
 ```
 
-## Release the CLI
+## Working on templates
 
-The package publishes from GitHub Actions when you push a version tag.
+If you change scaffold output, edit files under `packages/cli/templates/**`.
+If you change generation behavior, inspect both `packages/cli/src/**` and the
+template files it copies.
+
+Current shipped base templates:
+
+- `bun-hono`
+- `node-hono`
+
+## Release flow
+
+The npm package publishes from GitHub Actions when you push a version tag.
 
 1. Update `packages/cli/package.json` to the release version.
-2. Commit that version bump on `main`.
+2. Commit the release changes on `main`.
 3. Create an annotated tag that matches the package version.
 4. Push `main` and the tag.
 
 ```bash
-git commit -m "release 0.0.2"
-git tag -a v0.0.2 -m "Release v0.0.2"
+git commit -m "release 0.0.4"
+git tag -a v0.0.4 -m "Release v0.0.4"
 git push origin main
-git push origin v0.0.2
+git push origin v0.0.4
 ```
 
-The release workflow installs dependencies, runs `bunx @biomejs/biome check .`, builds the CLI from `packages/cli`, verifies the tag matches `packages/cli/package.json`, and then runs `bun publish` from `packages/cli`.
+The release workflow:
 
-Set `NPM_TOKEN` in the GitHub repository secrets before using the workflow.
+- installs dependencies with `bun install --frozen-lockfile`
+- runs `bunx @biomejs/biome check .`
+- builds the CLI from `packages/cli`
+- verifies the git tag matches `packages/cli/package.json`
+- publishes from `packages/cli` with `bun publish`
 
-## v1 behavior
+## Contributing
 
-- enabled templates: `bun-hono`, `node-hono`
-- interactive wizard asks for runtime + framework, then resolves to the template id
-- interactive wizard also asks whether to install dependencies and initialize git
-- non-interactive usage accepts `--runtime <name>` + `--framework <name>` or `--template <directory-name>`
-- supported toolchains:
-  - `none`
-  - `biome`
-  - `eslint-prettier`
-- default alias: `~/*`
-- target path must not already contain files
+Start with `CONTRIBUTING.md` for setup, workflow, and expectations.
 
-The published CLI remains Node-compatible and is bundled from `packages/cli/src/index.ts` to `packages/cli/dist/cli.js`.
+Related docs:
+
+- `CONTRIBUTING.md`
+- `CODE_OF_CONDUCT.md`
+- `SECURITY.md`
+- `SUPPORT.md`
+
+## License
+
+MIT. See `LICENSE`.

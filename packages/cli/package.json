@@ -1,6 +1,6 @@
 {
   "name": "create-magicwand",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "type": "module",
   "description": "🪄 Magicwand — pragmatic DDD backend scaffolding",
   "author": "advtszn",
@@ -15,7 +15,7 @@
     "bun",
     "hono"
   ],
-  "homepage": "https://github.com/advtszn/create-magicwand#readme",
+  "homepage": "https://magicwand.advtszn.xyz",
   "bugs": {
     "url": "https://github.com/advtszn/create-magicwand/issues"
   },

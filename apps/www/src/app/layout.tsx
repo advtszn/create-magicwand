@@ -16,13 +16,16 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL(
-    process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000",
+    process.env.NEXT_PUBLIC_APP_URL ?? "https://magicwand.advtszn.xyz",
   ),
   title: "Magicwand CLI | Scaffold Layered DDD Backends",
   description:
     "Generate layered DDD backends with Bun or Node, Hono, toolchain presets, and a clean starting architecture.",
   icons: {
     icon: "/favicon-black.svg",
+  },
+  alternates: {
+    canonical: "/",
   },
   openGraph: {
     title: "Magicwand CLI | Scaffold Layered DDD Backends",
@@ -39,6 +42,7 @@ export const metadata: Metadata = {
     ],
     locale: "en_US",
     type: "website",
+    url: "/",
   },
   twitter: {
     card: "summary_large_image",
