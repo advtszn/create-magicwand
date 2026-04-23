@@ -1,6 +1,6 @@
 {
   "name": "create-magicwand",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "type": "module",
   "description": "🪄 Magicwand — pragmatic DDD backend scaffolding",
   "author": "advtszn",

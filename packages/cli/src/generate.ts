@@ -1,6 +1,13 @@
 import { spawn } from "node:child_process";
-import { cp, mkdir, readdir, readFile, writeFile } from "node:fs/promises";
-import { resolve } from "node:path";
+import {
+  cp,
+  mkdir,
+  readdir,
+  readFile,
+  rename,
+  writeFile,
+} from "node:fs/promises";
+import { basename, dirname, resolve } from "node:path";
 import { spinner } from "@clack/prompts";
 import { ensureTemplateDirectoryExists } from "./config";
 import { TOOLCHAIN_TEMPLATES_DIR } from "./constants";
@@ -33,6 +40,10 @@ interface PackageJsonShape {
   devDependencies?: Record<string, string>;
 }
 
+interface BiomeConfigShape {
+  root?: boolean;
+}
+
 export async function generateProject(config: ResolvedConfig) {
   const spin = spinner();
   const templateDirectory = await ensureTemplateDirectoryExists(
@@ -59,6 +70,9 @@ export async function generateProject(config: ResolvedConfig) {
       spin.message(`Applying ${config.toolchain} toolchain`);
       await applyToolchainFiles(config);
     }
+
+    spin.message("Normalizing template files");
+    await normalizeTemplateFiles(config.targetPathAbsolute);
 
     spin.message("Patching project files");
     await applyProjectReplacements(config.targetPathAbsolute, config);
@@ -170,6 +184,36 @@ async function patchPackageJson(config: ResolvedConfig) {
   );
 }
 
+async function normalizeTemplateFiles(targetDirectory: string) {
+  const files = await listFiles(targetDirectory);
+
+  for (const file of files) {
+    if (basename(file) !== "gitignore") {
+      await normalizeBiomeConfig(file);
+      continue;
+    }
+
+    await rename(file, resolve(dirname(file), ".gitignore"));
+  }
+}
+
+async function normalizeBiomeConfig(file: string) {
+  if (basename(file) !== "biome.json") {
+    return;
+  }
+
+  const original = await readFile(file, "utf8");
+  const biomeConfig = JSON.parse(original) as BiomeConfigShape;
+
+  if (biomeConfig.root !== false) {
+    return;
+  }
+
+  delete biomeConfig.root;
+
+  await writeFile(file, `${JSON.stringify(biomeConfig, null, 2)}\n`, "utf8");
+}
+
 function getToolchainScripts(config: ResolvedConfig): Record<string, string> {
   const packageRunner = config.runtime === "node" ? "npm run" : "bun run";
   const packageExecutor = config.runtime === "node" ? "npx" : "bunx";
@@ -180,20 +224,20 @@ function getToolchainScripts(config: ResolvedConfig): Record<string, string> {
     case "biome":
       return {
         lint: `${packageExecutor} @biomejs/biome lint .`,
-        "lint:fix": `${packageExecutor} @biomejs/biome lint --write .`,
-        format: `${packageExecutor} @biomejs/biome format --write .`,
-        "format:check": `${packageExecutor} @biomejs/biome format .`,
+        "lint:write": `${packageExecutor} @biomejs/biome lint --write .`,
+        format: `${packageExecutor} @biomejs/biome format .`,
+        "format:write": `${packageExecutor} @biomejs/biome format --write .`,
         check: `${packageExecutor} @biomejs/biome check .`,
         "check:write": `${packageExecutor} @biomejs/biome check --write .`,
       };
     case "eslint-prettier":
       return {
         lint: "eslint .",
-        "lint:fix": "eslint . --fix",
-        format: "prettier . --write",
-        "format:check": "prettier . --check",
-        check: `${packageRunner} lint && ${packageRunner} format:check`,
-        "check:write": `${packageRunner} lint:fix && ${packageRunner} format`,
+        "lint:write": "eslint . --fix",
+        format: "prettier . --check",
+        "format:write": "prettier . --write",
+        check: `${packageRunner} lint && ${packageRunner} format`,
+        "check:write": `${packageRunner} lint:write && ${packageRunner} format:write`,
       };
   }
 }
