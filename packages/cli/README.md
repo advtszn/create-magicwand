@@ -1,6 +1,6 @@
 # create-magicwand
 
-CLI package for scaffolding layered DDD backends with your preferred runtime and framework.
+CLI package for scaffolding layered backends with your preferred runtime and framework.
 
 ## Usage
 

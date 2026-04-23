@@ -265,10 +265,10 @@ export default function DocsPage() {
               Magicwand CLI
             </span>
             <h1 className="text-2xl font-pixel-square mt-1">
-              Scaffold layered DDD backends for your stack
+              Scaffold layered backends for your stack
             </h1>
             <p className="text-xs sm:text-sm text-muted-foreground mt-3 max-w-2xl mx-auto leading-relaxed">
-              Generate a pragmatic DDD backend with domain, application,
+              Generate a pragmatic layered backend with domain, application,
               infrastructure, and HTTP layers already in place, with room to
               customize the stack around your needs.
             </p>

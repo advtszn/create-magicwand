@@ -1,6 +1,6 @@
 # {{projectName}}
 
-This is a layered DDD backend for Node + Express bootstrapped with `create-magicwand`.
+This is a layered backend for Node + Express bootstrapped with `create-magicwand`.
 
 It gives you a pragmatic starting point with `domain`, `application`,
 `infrastructure`, and `interfaces` layers already separated so you can ship

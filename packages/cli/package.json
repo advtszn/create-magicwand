@@ -2,7 +2,7 @@
   "name": "create-magicwand",
   "version": "0.1.1",
   "type": "module",
-  "description": "🪄 Magicwand — pragmatic DDD backend scaffolding",
+  "description": "🪄 Magicwand — pragmatic layered backend scaffolding",
   "author": "advtszn",
   "license": "MIT",
   "keywords": [
@@ -10,7 +10,7 @@
     "scaffold",
     "scaffolding",
     "template",
-    "ddd",
+    "layered-architecture",
     "backend",
     "bun",
     "hono"

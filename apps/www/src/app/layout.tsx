@@ -18,9 +18,9 @@ export const metadata: Metadata = {
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_APP_URL ?? "https://magicwand.advtszn.xyz",
   ),
-  title: "Magicwand CLI | Scaffold Layered DDD Backends",
+  title: "Magicwand CLI | Scaffold Layered Backends",
   description:
-    "Generate layered DDD backends with Bun or Node, Hono, toolchain presets, and a clean starting architecture.",
+    "Generate layered backends with Bun or Node, Hono, toolchain presets, and a clean starting architecture.",
   icons: {
     icon: "/favicon-black.svg",
   },
@@ -28,16 +28,16 @@ export const metadata: Metadata = {
     canonical: "/",
   },
   openGraph: {
-    title: "Magicwand CLI | Scaffold Layered DDD Backends",
+    title: "Magicwand CLI | Scaffold Layered Backends",
     description:
-      "Generate layered DDD backends with Bun or Node, Hono, toolchain presets, and a clean starting architecture.",
+      "Generate layered backends with Bun or Node, Hono, toolchain presets, and a clean starting architecture.",
     siteName: "Magicwand CLI",
     images: [
       {
         url: "/og.png",
         width: 1200,
         height: 630,
-        alt: "Magicwand CLI - Scaffold Layered DDD Backends",
+        alt: "Magicwand CLI - Scaffold Layered Backends",
       },
     ],
     locale: "en_US",
@@ -46,9 +46,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Magicwand CLI | Scaffold Layered DDD Backends",
+    title: "Magicwand CLI | Scaffold Layered Backends",
     description:
-      "Generate layered DDD backends with Bun or Node, Hono, toolchain presets, and a clean starting architecture.",
+      "Generate layered backends with Bun or Node, Hono, toolchain presets, and a clean starting architecture.",
     images: ["/og.png"],
   },
 };

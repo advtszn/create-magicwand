@@ -2,7 +2,7 @@
 
 Contributor docs for the `create-magicwand` monorepo.
 
-`create-magicwand` is a CLI for scaffolding layered DDD backends. This
+`create-magicwand` is a CLI for scaffolding layered backends. This
 repository contains the published CLI, the shipped project templates, and the
 marketing site.
 

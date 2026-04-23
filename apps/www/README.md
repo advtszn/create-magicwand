@@ -1,6 +1,6 @@
 # Magicwand CLI Website
 
-Marketing site for `create-magicwand`, the CLI for scaffolding pragmatic layered DDD backends.
+Marketing site for `create-magicwand`, the CLI for scaffolding pragmatic layered backends.
 
 ## Local Development
 
